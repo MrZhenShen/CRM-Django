@@ -98,7 +98,7 @@ class ProjectList(APIView):
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        serializer = ClientSerializer(data=request.data)
+        serializer = ProjectSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -107,13 +107,14 @@ class ProjectList(APIView):
 class ClientProjectList(APIView):
     def get_object(self, pk):
         try:
-            return Project.objects.get(pk=pk)
+            return Client.objects.get(pk=pk)
         except Project.DoesNotExist:
             raise Http404
 
     def get(self, request, pk, format=None):
-        project = self.get_object(pk)
-        serializer = ProjectSerializer(project)
+        client = self.get_object(pk)
+        projects = Project.objects.filter(Client = client)
+        serializer = ProjectSerializer(projects, many=True)
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
