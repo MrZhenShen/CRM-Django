@@ -1,17 +1,10 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 # Create your models here.
 
-class Client(models.Model):
-  first_name = models.CharField(max_length=20)
-  last_name = models.CharField(max_length=20)
-  birth_date = models.DateField(default='2021-12-12')
+class Client(AbstractUser):
   telephone_number = models.CharField(max_length=15)
-  email = models.CharField(max_length=30)
-  password = models.CharField(max_length=50)
-
-  is_staff = models.BooleanField(default=False)
-
   company_name = models.CharField(max_length=30)
   company_link = models.CharField(max_length=50, default='-')
   industry = models.CharField(max_length=20)
