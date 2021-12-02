@@ -3,6 +3,8 @@ from crmApp import views
 from rest_framework.urlpatterns import format_suffix_patterns
 
 urlpatterns = [
+    path("login/", views.LoginView.as_view(), name="login"),
+
     path('clients/', views.ClientList.as_view()),
     path('clients/<int:pk>/', views.ClientDetail.as_view()),
 
