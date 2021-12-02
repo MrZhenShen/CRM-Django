@@ -1,12 +1,31 @@
+from django.contrib.auth.models import Permission
 from django.shortcuts import render
+from django.contrib.auth import authenticate
 
 from .models import Client, Good, Status, Project
 from .serializers import ClientSerializer, StatusSerializer, ProjectSerializer, GoodSerializer
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status, viewsets
 
+# Login
+
+# (<Token: f32ccbd308386ffb816782ffe852f5a982b35268>, True)
+# (<Token: d7fe63dae8b18639bd656c1bec3b93b078598e60>, True)
+
+class LoginView(APIView):
+    permission_classes = ()
+
+    def post(self, request):
+        username = Client.objects.get(email=request.data.get('email'))
+        password = request.data.get('password')
+        client = authenticate(username=username, password=password)
+        if client:
+            return Response({"token": client.auth_token.key})
+        else:
+            return Response({"error": "Wrong Credentials"}, status=status.HTTP_400_BAD_REQUEST)
 
 # Client views
 class ClientList(APIView):
@@ -71,6 +90,7 @@ class StatusDetail(APIView):
 
 # Good views
 class GoodList(APIView):
+    permission_classes = ()
     def get(self, request, format=None):
         goods = Good.objects.all()
         serializer = GoodSerializer(goods, many=True)
@@ -92,6 +112,8 @@ class GoodDetail(APIView):
 # Project views
 
 class ProjectList(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, format=None):
         projects = Project.objects.all()
         serializer = ProjectSerializer(projects, many=True)
