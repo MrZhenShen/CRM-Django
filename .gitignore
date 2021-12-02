@@ -11,6 +11,8 @@ media
 
 *.DS_Store
 
+crmProject/crmApp/migrations/
+
 # If you are using PyCharm # 
 .idea/**/workspace.xml 
 .idea/**/tasks.xml 
