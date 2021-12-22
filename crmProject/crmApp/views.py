@@ -7,13 +7,20 @@ from .serializers import ClientSerializer, StatusSerializer, ProjectSerializer, 
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework import status, viewsets
 
 # Login
 
 # (<Token: f32ccbd308386ffb816782ffe852f5a982b35268>, True)
 # (<Token: d7fe63dae8b18639bd656c1bec3b93b078598e60>, True)
+
+# {
+# "email": "admin@mail.com",
+# "password": "qwerty"
+# ola@mail.com
+# 1234
+# }
 
 class LoginView(APIView):
     permission_classes = ()
@@ -23,12 +30,18 @@ class LoginView(APIView):
         password = request.data.get('password')
         client = authenticate(username=username, password=password)
         if client:
-            return Response({"token": client.auth_token.key})
+            return Response({
+                "token": client.auth_token.key,
+                "is_staff": client.is_staff,
+                "id": client.id
+            })
         else:
             return Response({"error": "Wrong Credentials"}, status=status.HTTP_400_BAD_REQUEST)
 
 # Client views
 class ClientList(APIView):
+    permission_classes = [IsAuthenticated & IsAdminUser]
+
     def get(self, request, format=None):
         clients = Client.objects.all()
         serializer = ClientSerializer(clients, many=True)
@@ -42,6 +55,8 @@ class ClientList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ClientDetail(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get_object(self, pk):
         try:
             return Client.objects.get(pk=pk)
@@ -68,6 +83,7 @@ class ClientDetail(APIView):
 
 # Status views
 class StatusList(APIView):
+    permission_classes = ()
 
     def get(self, request, format=None):
         statuses = Status.objects.all()
@@ -75,6 +91,7 @@ class StatusList(APIView):
         return Response(serializer.data)
 
 class StatusDetail(APIView):
+    permission_classes = ()
 
     def get_object(self, pk):
         try:
@@ -91,12 +108,15 @@ class StatusDetail(APIView):
 # Good views
 class GoodList(APIView):
     permission_classes = ()
+
     def get(self, request, format=None):
         goods = Good.objects.all()
         serializer = GoodSerializer(goods, many=True)
         return Response(serializer.data)
 
 class GoodDetail(APIView):
+    permission_classes = ()
+
     def get_object(self, pk):
         try:
             return Good.objects.get(pk=pk)
@@ -112,7 +132,7 @@ class GoodDetail(APIView):
 # Project views
 
 class ProjectList(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated & IsAdminUser]
 
     def get(self, request, format=None):
         projects = Project.objects.all()
@@ -127,6 +147,8 @@ class ProjectList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ClientProjectList(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get_object(self, pk):
         try:
             return Client.objects.get(pk=pk)
@@ -135,7 +157,7 @@ class ClientProjectList(APIView):
 
     def get(self, request, pk, format=None):
         client = self.get_object(pk)
-        projects = Project.objects.filter(Client = client)
+        projects = Project.objects.filter(Client=client)
         serializer = ProjectSerializer(projects, many=True)
         return Response(serializer.data)
 
