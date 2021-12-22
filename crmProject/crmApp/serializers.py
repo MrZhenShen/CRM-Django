@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from .models import Client, Good, Status, Project
+from datetime import datetime
 
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
@@ -26,11 +27,19 @@ class ClientSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         client = Client(
-            email=validated_data['email']
+            first_name = validated_data['first_name'],
+            last_name = validated_data['last_name'],
+            telephone_number = validated_data['telephone_number'],
+            email=validated_data['email'],
+            is_staff = False,
+            company_name = validated_data['company_name'],
+            industry = validated_data['industry'],
+            last_login = datetime.now(),
+            username = validated_data['email'].split("@")[0]
         )
         client.set_password(validated_data['password'])
         client.save()
-        Token.objects.create(client=client)
+        Token.objects.create(user=client)
         return client
 
 
