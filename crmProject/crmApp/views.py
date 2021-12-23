@@ -68,9 +68,9 @@ class ClientDetail(APIView):
         serializer = ClientSerializer(client)
         return Response(serializer.data)
 
-    def put(self, request, pk, format=None):
+    def patch(self, request, pk):
         client = self.get_object(pk)
-        serializer = ClientSerializer(client, data=request.data)
+        serializer = ClientSerializer(client, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

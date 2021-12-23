@@ -12,6 +12,7 @@ class ClientSerializer(serializers.ModelSerializer):
             'last_name',
             'telephone_number',
             'email',
+            'username',
             'password',
             'is_staff',
             'company_name',
