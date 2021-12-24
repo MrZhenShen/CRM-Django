@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
+from rest_framework.status import HTTP_409_CONFLICT
 from .models import Client, Good, Status, Project
 from datetime import datetime
 
@@ -36,8 +37,13 @@ class ClientSerializer(serializers.ModelSerializer):
             company_name = validated_data['company_name'],
             industry = validated_data['industry'],
             last_login = datetime.now(),
-            username = validated_data['email'].split("@")[0]
+            username = validated_data['username']
         )
+
+        users = Client.objects.filter(email=client.email)
+        if users:
+            raise serializers.ValidationError({'Email '+client.email+" already exists"})
+
         client.set_password(validated_data['password'])
         client.save()
         Token.objects.create(user=client)
