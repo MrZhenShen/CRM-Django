@@ -71,10 +71,6 @@ class StatusSerializer(serializers.ModelSerializer):
         ]
 
 class ProjectSerializer(serializers.ModelSerializer):
-    Good = GoodSerializer()
-    Client = ClientSerializer()
-    Status = StatusSerializer()
-
     class Meta:
         model = Project
         fields = [

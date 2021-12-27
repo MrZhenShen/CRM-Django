@@ -10,6 +10,7 @@ urlpatterns = [
     path('clients/<int:pk>/', views.ClientDetail.as_view()),
 
     path('projects/', views.ProjectList.as_view()),
+    path('projects-create/', views.ProjectCreate.as_view()),
     path('client-projects/<int:pk>/', views.ClientProjectList.as_view()),
 
     path('goods/', views.GoodList.as_view()),
