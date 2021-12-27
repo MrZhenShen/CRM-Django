@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate
 
 from .models import Client, Good, Status, Project
-from .serializers import ClientSerializer, StatusSerializer, ProjectSerializer, GoodSerializer
+from .serializers import ClientSerializer, StatusSerializer, ProjectSerializer, GoodSerializer, ProjectPOSTSerializer
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -147,7 +147,7 @@ class ProjectCreate(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
-        serializer = ProjectSerializer(data=request.data)
+        serializer = ProjectPOSTSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
