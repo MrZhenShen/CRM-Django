@@ -53,22 +53,12 @@ class ClientSerializer(serializers.ModelSerializer):
 class GoodSerializer(serializers.ModelSerializer):
     class Meta:
         model = Good
-        fields = [
-            'id',
-            'name',
-            'description',
-            'example_image',
-            'pricing'
-        ]
+        fields = '__all__'
 
 class StatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = Status
-        fields = [
-            'id',
-            'title',
-            'color'
-        ]
+        fields = '__all__'
 
 class ProjectSerializer(serializers.ModelSerializer):
     Good = GoodSerializer()
@@ -77,22 +67,10 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = [
-            'id',
-            'Good',
-            'Client',
-            'client_comment',
-            'Status'
-        ]
+        fields = '__all__'
 
 class ProjectPOSTSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Project
-        fields = [
-            'id',
-            'Good',
-            'Client',
-            'client_comment',
-            'Status'
-        ]
+        fields = '__all__'
+
